@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Courier.Cut/dismissButton.png</file>
+        <file>Courier.Cut/inputBox.png</file>
+        <file>Courier.Cut/picFrame.png</file>
+        <file>Courier.Cut/demoPic.png</file>
+        <file>Courier.Cut/dialogFrame.png</file>
+        <file>Courier.Cut/dialogFrame_R.png</file>
+        <file>Courier.Cut/back.png</file>
+        <file>Courier.Cut/installWindowBack.png</file>
+        <file>Courier.Cut/shadow.png</file>
+    </qresource>
+</RCC>
