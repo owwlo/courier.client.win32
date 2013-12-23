@@ -19,6 +19,12 @@ public:
 	~CourierQmlViewer();
 	virtual void closeEvent( QCloseEvent * );
 
+public slots:
+	Q_INVOKABLE void viewerResize(int length, int breadth)
+	{
+		setGeometry(this->x(),this->y(),length,breadth);
+	}
+
 private:
 	CourierUiHandler * mUiHandler;
 	QString mQMLPath;

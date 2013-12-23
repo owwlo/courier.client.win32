@@ -47,15 +47,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="authinputwindowuihandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="chatwindowuihandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="clienthandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="connectionmanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -63,9 +54,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="courierservice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="courieruihandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="databasemanager.cpp">
@@ -161,18 +149,36 @@
     <ClCompile Include="GeneratedFiles\qrc_resources.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="base64.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="userimageprovider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_alertuihandler.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_alertuihandler.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="alertuihandler.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="authinputwindowuihandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="chatwindowuihandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clienthandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="courieruihandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="StdAfx.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="authinputwindowuihandler.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="chatwindowuihandler.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="clienthandler.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="connectionmanager.h">
@@ -182,9 +188,6 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="courierservice.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="courieruihandler.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="databasemanager.h">
@@ -203,6 +206,24 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="uimanager.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="userimageprovider.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="courieruihandler.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="alertuihandler.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="authinputwindowuihandler.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="chatwindowuihandler.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="clienthandler.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -242,5 +263,16 @@
     <None Include="Courier.Cut\shadow.png">
       <Filter>Resource Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="base64.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="models.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

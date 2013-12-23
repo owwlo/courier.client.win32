@@ -5,6 +5,7 @@
 #include <QThread>
 #include "uimanager.h"
 #include "doorkeeper.h"
+#include <QTimer>
 
 class CourierService : public QThread
 {
@@ -17,10 +18,12 @@ public:
 private:
 	UIManager * mUiManager;
 	DoorKeeper * mDoorKeeper;
+	QTimer mTimer;
 
 signals:
     
 public slots:
+	void tick();
     
 };
 

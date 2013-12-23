@@ -9,8 +9,18 @@ Rectangle {
 
     id: dialogItem
     property bool isHost: true
+    property string content
+    property int itemHeight
+    property string userImageSource
 
     color: "transparent"
+
+    Component.onCompleted: {
+        text_edit1.text = content;
+        image1.source = userImageSource;
+        group_A.height = dialogItem.height = Math.max(text_edit1.height + 10, 51);
+    }
+
     state: isHost ? "STATE_HOST" : "STATE_CLIENT"
 
     states: [
@@ -84,15 +94,17 @@ Rectangle {
 
     Row {
         id: row1
-        anchors.fill: parent
+        //anchors.fill: parent
+        width: parent.width
 
         Rectangle {
             id: group_A
             color: "transparent"
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 0
-            anchors.top: parent.top
-            anchors.topMargin: 0
+//            anchors.bottom: parent.bottom
+//            anchors.bottomMargin: 0
+//            anchors.top: parent.top
+//            anchors.topMargin: 0
+            height: parent.height
 
             BorderImage {
                 id: border_image2
@@ -101,31 +113,37 @@ Rectangle {
                 border.top: 31
             }
 
-            TextEdit {
+            Text {
                 id: text_edit1
                 color: "#8e8e8e"
-                readOnly: true
-                text: qsTr("${TEXT_MESSAGE_A}")
+                //readOnly: true
                 font.bold: true
                 font.family: "微软雅黑"
                 wrapMode: TextEdit.WrapAtWordBoundaryOrAnywhere
-                anchors.bottomMargin: 5
-                anchors.topMargin: 5
-                anchors.fill: parent
-                z: 1
+                //anchors.fill: parent
+                width: parent.width - 24
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                //z: 1
                 font.pixelSize: 12
+
+                Rectangle {
+                    id: textArea
+                    color:"transparent"
+                    anchors.fill: parent
+                }
             }
         }
 
         Rectangle {
             id: group_B
             width: 51
+            height: 51
             color: "transparent"
-            radius: 0
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 0
-            anchors.top: parent.top
-            anchors.topMargin: 0
+//            anchors.bottom: parent.bottom
+//            anchors.bottomMargin: 0
+//            anchors.top: parent.top
+//            anchors.topMargin: 0
 
             BorderImage {
                 id: border_image1
@@ -136,7 +154,10 @@ Rectangle {
 
             Image {
                 id: image1
+                smooth: true
                 anchors.fill: parent
+                anchors.margins: 1
+                fillMode: Image.PreserveAspectFit
                 source: "qrc:/Courier.Cut/demoPic.png"
             }
         }

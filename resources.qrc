@@ -9,5 +9,7 @@
         <file>Courier.Cut/back.png</file>
         <file>Courier.Cut/installWindowBack.png</file>
         <file>Courier.Cut/shadow.png</file>
+        <file>Courier.Cut/new_phone_add.png</file>
+        <file>Courier.Cut/yes.png</file>
     </qresource>
 </RCC>

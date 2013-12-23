@@ -8,37 +8,11 @@
 #include "doorkeeper.h"
 #include <QMutex>
 #include "uimanager.h"
+#include "models.h"
 
 // 接收缓冲区默认大小
 #define RCVBUFFER_LENGTH 1024*10
 #define PORT_TO_LISTEN 38757
-
-enum CLIENT_TYPE
-{
-	CLIENT_TYPE_SOCKET,
-	CLIENT_TYPE_HTTP
-};
-
-struct CLIENT_INFO
-{
-	CLIENT_TYPE type;
-}
-;
-struct SOCKET_CLIENT_INFO : CLIENT_INFO
-{
-	QHostAddress ip;
-	quint16 port;
-	QString imxi;
-
-	bool operator==(const struct SOCKET_CLIENT_INFO &info) const
-	{
-		if(ip != info.ip) return false;
-		if(port != info.port) return false;
-		if(imxi.compare(info.imxi) != 0) return false;
-		else return true;
-	}
-};
-
 
 /************************************************************************/
 /* 每个连接的应答线程
@@ -57,6 +31,8 @@ class DoorKeeper;
 
 class UIManager;
 
+enum CLIENT_TYPE;
+
 class ConnectionManager : public QThread
 {
 	Q_OBJECT
@@ -69,19 +45,22 @@ public:
 public slots:
 	void OnReceiveMessage(QString message);
 	void OnClientExit();
-	void OnDoorKnocked(SOCKET_CLIENT_INFO);
+	void OnDoorKnocked(COURIER::SOCKET_CLIENT_INFO);
+	void OnReconnect(COURIER::SOCKET_CLIENT_INFO);
 	void onAuthenticateCodeEntered(QVariant);
 	void connectionError(QAbstractSocket::SocketError);
+	void onMessagReplySubmittedByUser(QString id, COURIER::MESSAGE_ITEM);
 
 signals:
 	void SIGNAL_REQUIRE_AUTHENTICATE_CODE();
+	void SIGNAL_ON_RECONNECTED(COURIER::SOCKET_CLIENT_INFO);
 
 private:
 	void initServer();
 	virtual void run();
 	ConnectionManager(QObject *parent);
 	void newClientAdded(/*SOCKET*/);
-	QString getClientId( SOCKET_CLIENT_INFO info );
+	QString getClientId( COURIER::SOCKET_CLIENT_INFO info );
 	void newSessionCheck();
 	QString getClientCodeFromAuthCode( QString code );
 	void removeConnection( ClientHandler * client );
@@ -97,7 +76,7 @@ private:
 	UIManager * mUiManager;
 
 	QMutex mKnockedClientList_mutex;
-	QMap<QString, SOCKET_CLIENT_INFO> * mKnockedClientList;
+	QMap<QString, COURIER::SOCKET_CLIENT_INFO> * mKnockedClientList;
 
 	class ClientListener
 	{

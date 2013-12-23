@@ -6,6 +6,7 @@
 #include <QTimer>
 #include "connectionmanager.h"
 #include <QMap>
+#include "models.h"
 
 static const qint32 broadcastPort = 27392;
 static const qint32 BroadcastInterval = 60*1000;
@@ -13,7 +14,8 @@ static const qint32 BroadcastInterval = 60*1000;
 #define BASE64_MAGIC_STRING "CoUrIeR"
 
 class ConnectionManager;
-struct SOCKET_CLIENT_INFO;
+
+struct COURIER::SOCKET_CLIENT_INFO;
 
 class DoorKeeper : public QThread
 {
@@ -28,7 +30,8 @@ private slots:
 	void readBroadcastDatagram();
 
 signals:
-	void SIGNAL_KNOCK_DOOR(SOCKET_CLIENT_INFO);
+	void SIGNAL_KNOCK_DOOR(COURIER::SOCKET_CLIENT_INFO);
+	void SIGNAL_RECONNECT(COURIER::SOCKET_CLIENT_INFO);
 
 private:
 	QList<QHostAddress> broadcastAddresses;

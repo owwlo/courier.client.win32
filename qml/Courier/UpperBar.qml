@@ -7,10 +7,13 @@ Rectangle {
     height: 30
     color: "transparent"
 
+    property string senderName;
+    property string senderPhone;
+
     Text {
         id: title
         height: 18
-        text: "同${MESSAGE_SENDER}(${PHONE_NUMBER})的会话"
+        text: "同" + senderName + "(" + senderPhone + ")的会话"
         anchors.leftMargin: 5
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter

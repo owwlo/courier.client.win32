@@ -1,6 +1,8 @@
 #include "doorkeeper.h"
 #include <QNetworkInterface>
 #include "json.h"
+#include <QNetworkAddressEntry>
+#include <QListIterator>
 
 DoorKeeper * DoorKeeper::sInstance = nullptr;
 
@@ -30,8 +32,9 @@ void DoorKeeper::updateAddresses()
 {
 	broadcastAddresses.clear();
 	ipAddresses.clear();
-	foreach (QNetworkInterface interface, QNetworkInterface::allInterfaces()) {
-		foreach (QNetworkAddressEntry entry, interface.addressEntries()) {
+	QListIterator<QNetworkInterface> interface_iterator(QNetworkInterface::allInterfaces());
+	while (interface_iterator.hasNext()) {
+		foreach (QNetworkAddressEntry entry, interface_iterator.next().addressEntries()) {
 			QHostAddress broadcastAddress = entry.broadcast();
 			if (broadcastAddress != QHostAddress::Null && entry.ip() != QHostAddress::LocalHost) {
 				broadcastAddresses << broadcastAddress;
@@ -87,20 +90,33 @@ void DoorKeeper::readBroadcastDatagram()
 		if(!isParsingSuccess)
 			continue;
 
-		SOCKET_CLIENT_INFO clientInfo;
-		clientInfo.imxi = json["imxi"].toString();
-		clientInfo.ip = senderIp;
-		clientInfo.port = json["port"].toString().toInt();
+		if (json["json_type"].toString().compare("knockDoor") == 0)
+		{
+			COURIER::SOCKET_CLIENT_INFO clientInfo;
+			clientInfo.imxi = json["imxi"].toString();
+			clientInfo.ip = senderIp;
+			clientInfo.port = json["port"].toString().toInt();
 
-		emit SIGNAL_KNOCK_DOOR(clientInfo);
-		//if (isLocalHostAddress(senderIp) && senderServerPort == serverPort)
-			//continue;
+			emit SIGNAL_KNOCK_DOOR(clientInfo);
+		} else if (json["json_type"].toString().compare("reconnect") == 0)
+		{
+			QString recoverIp = json["imxi"].toString();
+			
+			QListIterator<QHostAddress> it(ipAddresses);  
+			while(it.hasNext()){  
+				QHostAddress address = it.next();
+				if (json["reconnect_ip"].toString().indexOf(address.toString()) > 0) 
+				{
+					COURIER::SOCKET_CLIENT_INFO clientInfo;
+					clientInfo.imxi = json["imxi"].toString();
+					clientInfo.ip = senderIp;
+					clientInfo.port = json["port"].toString().toInt();
 
-		//if (!client->hasConnection(senderIp)) {
-		//	Connection *connection = new Connection(this);
-		//	emit newConnection(connection);
-		//	connection->connectToHost(senderIp, senderServerPort);
-		//}
+					emit SIGNAL_RECONNECT(clientInfo);
+					return;
+				}
+			}  
+		}
 	}
 }
 
@@ -117,5 +133,6 @@ DoorKeeper * DoorKeeper::getInstance()
 void DoorKeeper::init()
 {
 	mConnectionManager = ConnectionManager::getInstance();
-	connect(this,SIGNAL(SIGNAL_KNOCK_DOOR(SOCKET_CLIENT_INFO)),mConnectionManager,SLOT(OnDoorKnocked(SOCKET_CLIENT_INFO)));
+	connect(this,SIGNAL(SIGNAL_KNOCK_DOOR(COURIER::SOCKET_CLIENT_INFO)),mConnectionManager,SLOT(OnDoorKnocked(COURIER::SOCKET_CLIENT_INFO)));
+	connect(this,SIGNAL(SIGNAL_RECONNECT(COURIER::SOCKET_CLIENT_INFO)),mConnectionManager,SLOT(OnReconnect(COURIER::SOCKET_CLIENT_INFO)));
 }

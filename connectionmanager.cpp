@@ -36,10 +36,13 @@ void ConnectionManager::initServer()
 	mDoorKeeper = DoorKeeper::getInstance();
 	mUiManager = UIManager::getInstance();
 	
-	mKnockedClientList = new QMap<QString, SOCKET_CLIENT_INFO>;
+	mKnockedClientList = new QMap<QString, COURIER::SOCKET_CLIENT_INFO>;
 	mClientConnectedList = new QMap<QString, ClientHandler*>;
 
-	connect(this, SIGNAL(SIGNAL_REQUIRE_AUTHENTICATE_CODE()), mUiManager, SLOT(OnAuthenticateCodeRequired()));
+	connect(this, SIGNAL(SIGNAL_REQUIRE_AUTHENTICATE_CODE()), mUiManager,	
+		SLOT(OnAuthenticateCodeRequired()));
+	connect(this, SIGNAL(SIGNAL_ON_RECONNECTED(COURIER::SOCKET_CLIENT_INFO)), mUiManager,	
+		SLOT(onReconnected(COURIER::SOCKET_CLIENT_INFO)));
 }
 
 void ConnectionManager::OnReceiveMessage( QString message )
@@ -53,7 +56,7 @@ void ConnectionManager::OnClientExit()
 		removeConnection(client);
 }
 
-void ConnectionManager::OnDoorKnocked( SOCKET_CLIENT_INFO info )
+void ConnectionManager::OnDoorKnocked( COURIER::SOCKET_CLIENT_INFO info )
 {
 	QString clientId = getClientId(info);
 	qDebug()<<"Qt: ID for "<<info.ip<<" port: "<<info.port<<" is: "<<clientId;
@@ -63,10 +66,27 @@ void ConnectionManager::OnDoorKnocked( SOCKET_CLIENT_INFO info )
 	newSessionCheck();
 }
 
+void ConnectionManager::OnReconnect( COURIER::SOCKET_CLIENT_INFO clientInfo)
+{
+	QString id = getClientId(clientInfo);
+
+	// 当前没有对应id的已知客户端
+	if(clientInfo.ip.toString().compare("") == 0)
+		return;
+
+	ClientHandler * client =  new ClientHandler(id, clientInfo, "no_auth_code");
+	client->init();
+	QMutexLocker locker(&mClientConnectedList_mutex);
+	mClientConnectedList->insert(id, client);
+
+	// 通知重连成功
+	emit SIGNAL_ON_RECONNECTED(clientInfo);
+}
+
 /************************************************************************/
 /* 将ip地址16进制最后两位和imxi倒数两位合并做为Client的ID
 /************************************************************************/
-QString ConnectionManager::getClientId( SOCKET_CLIENT_INFO info )
+QString ConnectionManager::getClientId( COURIER::SOCKET_CLIENT_INFO info )
 {
 	qint32 ip = info.ip.toIPv4Address();
 	QString ipId = QString::number(ip, 16);
@@ -90,10 +110,10 @@ void ConnectionManager::newSessionCheck()
 void ConnectionManager::onAuthenticateCodeEntered( QVariant authCode )
 {
 	QString id = getClientCodeFromAuthCode(authCode.toString());
-	SOCKET_CLIENT_INFO clientInfo = mKnockedClientList->value(id);
+	COURIER::SOCKET_CLIENT_INFO clientInfo = mKnockedClientList->value(id);
 	
 	// 当前没有对应id的已知客户端
-	if(clientInfo.ip.toString() == "")
+	if(clientInfo.ip.toString().compare("") == 0)
 		return;
 
 	ClientHandler * client =  new ClientHandler(id, clientInfo, authCode.toString());
@@ -123,8 +143,16 @@ void ConnectionManager::removeConnection( ClientHandler * client )
 	newSessionCheck();
 }
 
-void ConnectionManager::connectionError( QAbstractSocket::SocketError )
+void ConnectionManager::connectionError( QAbstractSocket::SocketError e)
 {
+	qDebug()<<"Qt: SocketError "<<e<<" from sender"<<qobject_cast<ClientHandler *>(sender());
 	if (ClientHandler *client = qobject_cast<ClientHandler *>(sender()))
 		removeConnection(client);
+}
+
+void ConnectionManager::onMessagReplySubmittedByUser( QString clientId, COURIER::MESSAGE_ITEM msg)
+{
+	QMutexLocker locker(&mClientConnectedList_mutex);
+	ClientHandler * handler = mClientConnectedList->value(clientId);
+	handler->sendMessage(msg);
 }

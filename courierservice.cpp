@@ -15,13 +15,20 @@ QThread(parent)
 
 void CourierService::run()
 {
-	
+	mTimer.setInterval(10000);
+	connect(&mTimer, SIGNAL(timeout()), this, SLOT(tick()));
+	mTimer.start();
 }
 
 void CourierService::init()
 {
 	// 暂时不需要启动线程完成工作，如果最终不需要线程执行，将Service类改为QObject
-	//this->start();
+	this->start();
 	mDoorKeeper = DoorKeeper::getInstance();
 	mDoorKeeper->start();
+}
+
+void CourierService::tick()
+{
+
 }

@@ -2,7 +2,6 @@
 #define UIMANAGER_H
 
 #include <QWidget>
-//#include "ui_uimanager.h"
 #include "qmlapplicationviewer.h"
 #include "courierqmlviewer.h"
 #include <QDeclarativeContext>
@@ -11,6 +10,8 @@
 #include <QtDeclarative/QDeclarativeEngine>
 #include "courieruihandler.h"
 #include <QGraphicsObject>
+#include "clienthandler.h"
+#include "models.h"
 
 class CourierQmlViewer;
 
@@ -33,6 +34,9 @@ private:
 
 public slots:
 	Q_INVOKABLE void OnAuthenticateCodeRequired();
+	Q_INVOKABLE void OnNewMessage(QString,COURIER::MESSAGE_ITEM);
+	Q_INVOKABLE void OnNewMessagePack(QString,COURIER::MESSAGE_PACK);
+	Q_INVOKABLE void onReconnected(COURIER::SOCKET_CLIENT_INFO);
 };
 
 #endif // UIMANAGER_H

@@ -26,19 +26,21 @@ void CourierQmlViewer::setUpUiHandler( CourierUiHandler * uiHandler )
 
 void CourierQmlViewer::showWindow()
 {
-	setOrientation(ScreenOrientationAuto);
-	setAttribute(Qt::WA_TranslucentBackground);
-	engine()->rootContext()->setContextObject(mUiHandler);
-	setStyleSheet("background:transparent;");
 	QDeclarativeContext *window = rootContext();
-
-	// Connect signals and slots for QML
-	mUiHandler->setUpSignalSlot(this);
 
 	// 让QML控制窗口移动
 	window->setContextProperty("mainWindow", this);
 
+	setOrientation(ScreenOrientationAuto);
+	setAttribute(Qt::WA_TranslucentBackground);
+	engine()->rootContext()->setContextObject(mUiHandler);
+	setStyleSheet("background:transparent;");
+
+	// Connect signals and slots for QML
+	mUiHandler->setUpSignalSlot(this);
+
 	showExpanded();
+	//show();
 }
 
 void CourierQmlViewer::setQMLFile( QString path )
@@ -58,10 +60,10 @@ void CourierQmlViewer::setTopMost( bool topMost)
 	{
 		// 靠setWindowFlags会清空原有flags
 		// 如果flag多的话用windowFlags()逻辑运算后setWindowFlags会比较好
-		setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+		//setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 	}
 	else
 	{
-		setWindowFlags(Qt::FramelessWindowHint);
+		//setWindowFlags(Qt::FramelessWindowHint);
 	}
 }
